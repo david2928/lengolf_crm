@@ -106,7 +106,7 @@ def push_to_google_sheets(df_data):
 
         # set up filename
         time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
-        file_name = f"{FILE_NAME_PREFIX}
+        file_name = f"{FILE_NAME_PREFIX}"
         # _{time_str}"
 
         # set up gspread lib

@@ -12,7 +12,7 @@ PATH_TO_GOOGLE_KEY = "/tmp/service_account.json"
 SCREENSHOT_FOLDER = "/tmp/browserscreenshots"
 
 DRIVE_FOLDER_ID = os.getenv("DRIVE_FOLDER_ID", "1gJJn48WyvrYWjq7pcZ1qGZDNQsDYjMME") 
-FILE_NAME_PREFIX = os.getenv("FILE_NAME_PREFIX", "CustomerManagement")  
+FILE_NAME_PREFIX = os.getenv("FILE_NAME_PREFIX", "LENGOLF_CRM")  
 
 DEBUG = os.getenv("DEBUG", False)
 

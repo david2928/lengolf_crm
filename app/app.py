@@ -14,10 +14,9 @@ from  settings import *
 
 def screenshot(filename, page):
     if DEBUG:
-        page.screenshot(path = os.path.join(SCREENSHOT_FOLDER,filename ) )
+        page.screenshot(path=os.path.join(SCREENSHOT_FOLDER, filename))
 
 def get_file():
-
     print("Getting files from CMS")
     with sync_playwright() as p:
         if DEBUG:
@@ -27,14 +26,14 @@ def get_file():
             print(f"URL = {URL}")
             print(f"URL_CUST_MAGEMENT = {URL_CUST_MAGEMENT}")
             
-        browser = p.chromium.launch(headless = HEADLESS)
+        browser = p.chromium.launch(headless=HEADLESS)
         page = browser.new_page()
         print(f"Opening main page: {URL}")
         page.goto(URL)
         page.wait_for_load_state()
         print(f"Opened main page {page.title()}")
 
-        screenshot(filename= "LoginPageBefore.png", page=page)
+        screenshot(filename="LoginPageBefore.png", page=page)
 
         page.get_by_label('Username').fill(APP_LOGIN)
         page.get_by_label('Password').fill(APP_PASSWORD)
@@ -50,8 +49,8 @@ def get_file():
         page.wait_for_load_state()
         print(f"Login finished")
 
-        print(f"Opening cust management url: { URL_CUST_MAGEMENT }")
-        page.goto( URL_CUST_MAGEMENT )
+        print(f"Opening cust management url: {URL_CUST_MAGEMENT}")
+        page.goto(URL_CUST_MAGEMENT)
 
         page.wait_for_timeout(2000)
         page.wait_for_load_state()
@@ -74,32 +73,33 @@ def get_file():
 
         browser.close()
 
-
 def list_download_dir():
     print("List of downloaded csv files locally")
     files = []
-    for child in [i for i in Path(DOWNLOAD_FOLDER).iterdir() if ".csv" in str(i)]: 
+    for child in [i for i in Path(DOWNLOAD_FOLDER).iterdir() if ".csv" in str(i)]:
         print(child)
         files.append(child)
 
     return files
 
-
 def convert_file_to_sheets_data(file_path):
     try:
         print("Converting files into pandas")
-        df_data = pd.read_csv(file_path) 
+        df_data = pd.read_csv(file_path)
         df_data_cleaned = df_data.fillna('')
+        
+        # Add a column with the current timestamp
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        df_data_cleaned['UpdateTime'] = current_time
+
         print("Done")
         return df_data_cleaned
-    
+
     except Exception as ex:
-        print("Error during reading csv into pandas and formating to structure")
+        print("Error during reading csv into pandas and formatting to structure")
         raise ex
-    
 
 def push_to_google_sheets(df_data):
-
     try:
         # set up credentials
         credentials = service_account.Credentials.from_service_account_file(PATH_TO_GOOGLE_KEY)

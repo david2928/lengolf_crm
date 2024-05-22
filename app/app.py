@@ -106,14 +106,15 @@ def push_to_google_sheets(df_data):
 
         # set up filename
         time_str = datetime.now().strftime('%Y%m%d_%H%M%S')
-        file_name = f"{FILE_NAME_PREFIX}_{time_str}"
+        file_name = f"{FILE_NAME_PREFIX}
+        # _{time_str}"
 
         # set up gspread lib
         gc = gspread.service_account(filename=PATH_TO_GOOGLE_KEY)
         # create file
-        worksheet = gc.create(file_name)
-        print(f"File created: {worksheet}")
-        # worksheet = gc.open(file_name)
+        # worksheet = gc.create(file_name)
+        # print(f"File created: {worksheet}")
+        worksheet = gc.open(file_name)
         # update file
         worksheet.sheet1.update([df_data.columns.values.tolist()] + df_data.values.tolist())
         print(f"File populated")

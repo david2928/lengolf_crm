@@ -1,6 +1,5 @@
 import os
 import base64
-import json
 from pathlib import Path
 from dotenv import load_dotenv
 import logging
@@ -21,19 +20,15 @@ URL_CUST_MAGEMENT = os.getenv("URL_CUST_MAGEMENT")
 # Paths
 DOWNLOAD_FOLDER = Path(os.getenv("DOWNLOAD_FOLDER", BASE_DIR / "tmp" / "browserdownload"))
 SCREENSHOT_FOLDER = Path(os.getenv("SCREENSHOT_FOLDER", BASE_DIR / "tmp" / "browserscreenshots"))
-PATH_TO_GOOGLE_KEY = Path(os.getenv("PATH_TO_GOOGLE_KEY", BASE_DIR / "tmp" / "service_account.json"))
 
 HEADLESS = True
 
-DRIVE_FOLDER_ID = os.getenv("DRIVE_FOLDER_ID", "1gJJn48WyvrYWjq7pcZ1qGZDNQsDYjMME")
-FILE_NAME_PREFIX = os.getenv("FILE_NAME_PREFIX", "LENGOLF_CRM")
-
 # Ensure directories exist
-for folder in [DOWNLOAD_FOLDER, SCREENSHOT_FOLDER, PATH_TO_GOOGLE_KEY.parent]:
+for folder in [DOWNLOAD_FOLDER, SCREENSHOT_FOLDER]:
     folder.mkdir(parents=True, exist_ok=True)
 
 try:
-    required_vars = ["LOGIN", "PASSWORD", "GOOGLE_KEY"]
+    required_vars = ["LOGIN", "PASSWORD", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY"]
     missing_vars = [var for var in required_vars if var not in os.environ]
     if missing_vars:
         logger.error(f"Missing environment variables: {', '.join(missing_vars)}. Exiting.")
@@ -48,17 +43,10 @@ try:
     APP_PASSWORD = base64.b64decode(APP_PASSWORD_ENCODED).decode('utf-8')
     logger.debug(f"Decoded PASSWORD: {APP_PASSWORD}")
 
-    # Decode GOOGLE_KEY
-    GOOGLE_KEY_ENCODED = os.getenv("GOOGLE_KEY")
-    decoded_google_key = base64.b64decode(GOOGLE_KEY_ENCODED).decode('utf-8')
-
-    # Validate JSON
-    google_key_json = json.loads(decoded_google_key)
-
-    # Write the decoded key to the file
-    with open(PATH_TO_GOOGLE_KEY, "w") as f:
-        json.dump(google_key_json, f, indent=2)
-    logger.info(f"Google key decoded and placed in {PATH_TO_GOOGLE_KEY}")
+    # Supabase settings
+    SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+    SUPABASE_KEY = os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+    logger.info("Supabase configuration loaded successfully")
 
 except Exception as ex:
     logger.error("ERROR during parsing ENV variables.", exc_info=True)
